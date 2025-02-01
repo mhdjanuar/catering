@@ -15,7 +15,7 @@ export const generatePDF = (orders) => {
   doc.setFontSize(10);
   doc.setFont("times", "normal");
   doc.text(
-    "Jl. Raya Mustikasari Gg. Rambutan, RT 03 RW 02\nKec Bekasi Timur Kota Bekasi",
+    "Jl. Gedong Gg, RT 03 RW 02\nKec Kramat Jati Kota Jakarta Timur",
     105,
     15,
     { align: "center" }
@@ -35,14 +35,23 @@ export const generatePDF = (orders) => {
   autoTable(doc, {
     startY: 55, // Posisi mulai tabel setelah judul
     head: [
-      ["Order ID", "Food Name", "Customer Name", "Phone", "Address", "Status"],
+      [
+        "Order ID",
+        "Food Name",
+        "Customer Name",
+        "Phone",
+        "Address",
+        "Qty",
+        "Status",
+      ],
     ],
     body: orders.map((order) => [
       order.id,
-      order.name,
+      order.food_name,
       order.customer_name,
       order.phone,
       order.address,
+      order.qty,
       order.status,
     ]),
     styles: { font: "times", fontSize: 10, cellPadding: 3 },
@@ -53,10 +62,10 @@ export const generatePDF = (orders) => {
   // Footer: Tanda Tangan
   const footerY = doc.lastAutoTable.finalY + 20;
   doc.setFont("times", "normal");
-  doc.text("Bekasi, 14 Januari 2025", 140, footerY);
+  doc.text("Jakarta, 14 Januari 2025", 140, footerY);
   doc.text("Pemilik", 150, footerY + 10);
   doc.text("_______________________", 140, footerY + 20);
-  doc.text("Rafly Muchtar M.Kom", 140, footerY + 30);
+  doc.text("Rizky Saputra", 140, footerY + 30);
 
   // Save PDF
   doc.save("laporan_order_catering.pdf");

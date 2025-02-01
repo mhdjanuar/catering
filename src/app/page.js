@@ -34,7 +34,8 @@ export default function Home() {
     name: "",
     phone: "",
     address: "",
-    notes: "testttttt",
+    notes: "",
+    qty: 1,
   });
 
   useEffect(() => {

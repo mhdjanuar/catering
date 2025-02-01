@@ -91,6 +91,7 @@ export default function Orders() {
               <th className="px-4 py-2">Customer Name</th>
               <th className="px-4 py-2">Phone</th>
               <th className="px-4 py-2">Address</th>
+              <th className="px-4 py-2">Qty</th>
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
@@ -98,10 +99,11 @@ export default function Orders() {
             {orders.map((order) => (
               <tr key={order.id} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-2">{order.id}</td>
-                <td className="px-4 py-2">{order.name}</td>
+                <td className="px-4 py-2">{order.food_name}</td>
                 <td className="px-4 py-2">{order.customer_name}</td>
                 <td className="px-4 py-2">{order.phone}</td>
                 <td className="px-4 py-2">{order.address}</td>
+                <td className="px-4 py-2">{order.qty}</td>
                 <td className="px-4 py-2">
                   {order.status === "PENDING" && (
                     <button
