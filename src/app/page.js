@@ -168,6 +168,18 @@ export default function Home() {
                 />
               </div>
 
+              <div className="mb-4">
+                <label className="block text-gray-700">Qty</label>
+                <input
+                  type="number"
+                  name="qty"
+                  value={orderDetails.qty}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border border-gray-300 rounded-md mt-2"
+                  required
+                />
+              </div>
+
               <div className="flex justify-between">
                 <button
                   type="button"

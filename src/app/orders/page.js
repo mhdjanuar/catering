@@ -115,7 +115,7 @@ export default function Orders() {
                   )}
                   {order.status === "approved" && (
                     <button
-                      onClick={() => handleStatusChange(order.id, "pending")}
+                      onClick={() => handleStatusChange(order.id, "PENDING")}
                       className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
                     >
                       Accept
