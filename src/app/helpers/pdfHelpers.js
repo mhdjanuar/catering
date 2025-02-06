@@ -68,7 +68,9 @@ export const generatePDF = (orders) => {
     month: "long",
     year: "numeric",
   };
-  const formattedDate = today.toLocaleDateString("id-ID", options);
+  const formattedDate = today
+    .toLocaleDateString("id-ID", options)
+    .replace(",", ""); // Hapus koma setelah nama hari;
 
   doc.setFont("times", "normal");
   doc.text(`Jakarta, ${formattedDate}`, 140, footerY);
