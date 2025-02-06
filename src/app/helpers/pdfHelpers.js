@@ -61,11 +61,20 @@ export const generatePDF = (orders) => {
 
   // Footer: Tanda Tangan
   const footerY = doc.lastAutoTable.finalY + 20;
+  const today = new Date();
+  const options = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  const formattedDate = today.toLocaleDateString("id-ID", options);
+
   doc.setFont("times", "normal");
-  doc.text("Jakarta, 14 Januari 2025", 140, footerY);
-  doc.text("Pemilik", 150, footerY + 10);
-  doc.text("_______________________", 140, footerY + 20);
-  doc.text("Rizky Saputra", 140, footerY + 30);
+  doc.text(`Jakarta, ${formattedDate}`, 140, footerY);
+  doc.text("Pemilik", 158, footerY + 10);
+  doc.text("_______________________", 140, footerY + 40);
+  doc.text("Rizky Saputra", 155, footerY + 50);
 
   // Save PDF
   doc.save("laporan_order_catering.pdf");
