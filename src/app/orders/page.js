@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { generatePDF } from "../helpers/pdfHelpers"; // Import the helper
+import { generatePDF, generatePDFOrdersApprove } from "../helpers/pdfHelpers";
 
 export default function Orders() {
   const router = useRouter();
   const [orders, setOrders] = useState([]);
+  const [approvedOrders, setApprovedOrders] = useState([]); // State untuk pesanan approved
   const [user, setUser] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
-  const [selectedOrder, setSelectedOrder] = useState(null); // State to store selected order
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -26,6 +27,14 @@ export default function Orders() {
         .then((res) => res.json())
         .then((data) => setOrders(data))
         .catch((error) => console.error("Error fetching orders:", error));
+
+      // Fetch only approved orders
+      fetch("/api/ordersApprove")
+        .then((res) => res.json())
+        .then((data) => setApprovedOrders(data))
+        .catch((error) =>
+          console.error("Error fetching approved orders:", error)
+        );
     }
   }, [user]);
 
@@ -38,13 +47,13 @@ export default function Orders() {
       body: JSON.stringify({ status: newStatus }),
     })
       .then((res) => res.json())
-      .then((updatedOrder) => {
+      .then(() => {
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
             order.id === orderId ? { ...order, status: newStatus } : order
           )
         );
-        setIsModalOpen(false); // Close the modal after confirming
+        setIsModalOpen(false);
       })
       .catch((error) => console.error("Error updating order status:", error));
   };
@@ -59,9 +68,12 @@ export default function Orders() {
     setSelectedOrder(null);
   };
 
-  // Function to generate PDF report
   const handleGeneratePDF = () => {
-    generatePDF(orders); // Call the helper to generate the PDF
+    generatePDF(orders);
+  };
+
+  const handleGenerateApprovedPDF = () => {
+    generatePDFOrdersApprove(approvedOrders);
   };
 
   if (!user) {
@@ -70,20 +82,26 @@ export default function Orders() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4 text-center">Approved Orders</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">Orders</h1>
 
-      {/* Print and PDF buttons */}
+      {/* Tombol Report */}
       <div className="mb-4 flex justify-between">
         <button
           onClick={handleGeneratePDF}
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          Generate PDF Report
+          Generate Semua orders
+        </button>
+        <button
+          onClick={handleGenerateApprovedPDF}
+          className="bg-green-500 text-white px-4 py-2 rounded"
+        >
+          Generate Order di terima
         </button>
       </div>
 
       <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
-        <table className="min-w-full table-auto" id="orders-table">
+        <table className="min-w-full table-auto">
           <thead className="bg-gray-100 text-left">
             <tr>
               <th className="px-4 py-2">Order ID</th>
@@ -110,7 +128,7 @@ export default function Orders() {
                       onClick={() => openModal(order)}
                       className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
                     >
-                      Approve
+                      Accept
                     </button>
                   )}
                   {order.status === "approved" && (
@@ -118,7 +136,7 @@ export default function Orders() {
                       onClick={() => handleStatusChange(order.id, "PENDING")}
                       className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
                     >
-                      Accept
+                      Approved
                     </button>
                   )}
                 </td>
@@ -128,7 +146,7 @@ export default function Orders() {
         </table>
       </div>
 
-      {/* Modal for Confirmation */}
+      {/* Modal untuk Konfirmasi Approval */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-auto">
@@ -142,9 +160,7 @@ export default function Orders() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  handleStatusChange(selectedOrder.id, "approved");
-                }}
+                onClick={() => handleStatusChange(selectedOrder.id, "approved")}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
               >
                 Confirm
