@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { generatePDFFoods } from "../helpers/pdfHelpers"; // Import the helper
 
 export default function Home() {
   const router = useRouter();
@@ -29,6 +30,11 @@ export default function Home() {
         .catch((error) => console.error("Error fetching foods:", error));
     }
   }, [user]);
+
+  // Function to generate PDF report
+  const handleGeneratePDF = () => {
+    generatePDFFoods(foods); // Call the helper to generate the PDF
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -97,12 +103,20 @@ export default function Home() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-4 text-center">Food List</h1>
-      <button
-        onClick={() => openModal()}
-        className="mb-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-      >
-        Add Food
-      </button>
+      <div className="flex justify-between mb-4">
+        <button
+          onClick={() => openModal()}
+          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+        >
+          Add Food
+        </button>
+        <button
+          onClick={handleGeneratePDF}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        >
+          Generate PDF
+        </button>
+      </div>
       <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
         <table className="min-w-full table-auto">
           <thead className="bg-gray-100 text-left">
@@ -146,60 +160,6 @@ export default function Home() {
           </tbody>
         </table>
       </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-md shadow-lg w-96">
-            <h2 className="text-2xl font-bold mb-4">
-              {isEditMode ? "Edit" : "Add"} Food
-            </h2>
-            <form onSubmit={handleSaveFood}>
-              <input
-                type="text"
-                name="name"
-                value={newFood.name}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md mb-4"
-                placeholder="Name"
-                required
-              />
-              <input
-                type="text"
-                name="price"
-                value={newFood.price}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md mb-4"
-                placeholder="Price"
-                required
-              />
-              <input
-                type="text"
-                name="image"
-                value={newFood.image}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md mb-4"
-                placeholder="Image URL"
-                required
-              />
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="text-gray-500 border px-4 py-2 rounded-md"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                >
-                  {isEditMode ? "Save Changes" : "Add Food"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
