@@ -7,7 +7,7 @@ export const initOneSignal = () => {
       console.log("🔄 Menginisialisasi OneSignal...");
 
       await OneSignal.init({
-        appId: "1cce1136-e023-42e1-8354-54fd63594bde", // Ganti dengan App ID kamu
+        appId: "cdd6fcca-e560-4ddc-9003-7032784314f2", // Ganti dengan App ID kamu
         notifyButton: {
           enable: true, // Menampilkan tombol subscribe
         },
